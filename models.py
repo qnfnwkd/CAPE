@@ -85,7 +85,7 @@ class CAPE(nn.Module):
 		# Embedding Lookup
 		embedded_poi_in = self.poi_embedding_in(poi)
 		embedded_word_target = self.word_embedding_in(target)
-		embedded_word_context = self.word_embedding_in(context)
+		embedded_word_context = self.word_embedding_out(context)
 
 		# Concat
 		embedded_context = torch.cat([embedded_poi_in, embedded_word_target],1)
@@ -103,7 +103,7 @@ class CAPE(nn.Module):
 		batch_size = target.size()[0]
 		negative_samples = Variable(torch.cuda.FloatTensor(batch_size, num_sampled).
                          uniform_(0, self.vocab_size-1).long())
-		embedded_samples = self.word_embedding_in(negative_samples).neg()
+		embedded_samples = self.word_embedding_out(negative_samples).neg()
 
 		negative_loss = torch.bmm(embedded_samples, embedded_context.unsqueeze(2))
 
